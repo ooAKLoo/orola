@@ -1,0 +1,22 @@
+@import "tailwindcss";
+
+@theme {
+  --color-orola-green: #2D5A3D;
+  --color-orola-sage: #8FAE8B;
+  --color-orola-cream: #F5F0E8;
+  --color-orola-bark: #3D3229;
+  --color-orola-gold: #C4A35A;
+  --color-orola-l1: #FDFCF9;
+  --color-orola-l2: #EDE8DE;
+  --color-orola-l3: #E5DFD3;
+  --color-orola-void: #0A1A10;
+  --color-orola-deep: #132A1A;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  background-color: #F5F0E8;
+}
