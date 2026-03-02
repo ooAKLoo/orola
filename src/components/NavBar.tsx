@@ -10,8 +10,9 @@ export default function NavBar() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Hide on spot detail page
-  if (location.pathname.startsWith("/spot")) return null;
+  // Hide on detail / legal pages
+  const hidden = ["/spot", "/privacy", "/terms"];
+  if (hidden.some((p) => location.pathname.startsWith(p))) return null;
 
   const activeIdx = tabs.findIndex((t) => t.path === location.pathname);
   const isDark = location.pathname === "/";

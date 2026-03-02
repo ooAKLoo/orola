@@ -1,10 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import { motion, useReducedMotion } from "framer-motion";
 import { formatDistance } from "../lib/geo";
+import { getPalette, paletteBg, palettePrimary } from "../lib/palette";
 
 interface SoundOrbProps {
   id: string;
-  title: string;
+  colorKey: string;
   x: number;
   y: number;
   size: number;
@@ -15,7 +16,7 @@ interface SoundOrbProps {
 
 export default function SoundOrb({
   id,
-  title,
+  colorKey,
   x,
   y,
   size,
@@ -25,6 +26,8 @@ export default function SoundOrb({
 }: SoundOrbProps) {
   const navigate = useNavigate();
   const prefersReduced = useReducedMotion();
+  const { colors } = getPalette(colorKey);
+  const primary = palettePrimary(colors);
 
   const showLabel = distance < 500;
 
@@ -46,8 +49,12 @@ export default function SoundOrb({
       {/* Unlock pulse ring */}
       {unlocked && !prefersReduced && (
         <motion.div
-          className="absolute rounded-full bg-orola-gold/30"
-          style={{ width: size * 2.2, height: size * 2.2 }}
+          className="absolute rounded-full"
+          style={{
+            width: size * 2.2,
+            height: size * 2.2,
+            backgroundColor: `${primary}4D`,
+          }}
           animate={{ scale: [1, 2.2], opacity: [0.6, 0] }}
           transition={{
             duration: 2,
@@ -59,10 +66,14 @@ export default function SoundOrb({
 
       {/* Orb body */}
       <motion.div
-        className={`rounded-full ${
-          unlocked ? "bg-orola-gold" : "bg-orola-sage"
-        }`}
-        style={{ width: size, height: size, opacity }}
+        className="rounded-full"
+        style={{
+          width: size,
+          height: size,
+          background: paletteBg(colors),
+          opacity: unlocked ? opacity : opacity * 0.4,
+          boxShadow: unlocked ? `0 0 ${size}px ${primary}66` : "none",
+        }}
         animate={
           !prefersReduced && distance < 500
             ? { scale: [1, 1.15, 1] }
@@ -75,16 +86,11 @@ export default function SoundOrb({
         }
       />
 
-      {/* Label */}
+      {/* Distance label only */}
       {showLabel && (
-        <div className="mt-1 flex flex-col items-center pointer-events-none">
-          <span className="text-[8px] font-medium text-orola-cream/80 whitespace-nowrap max-w-[80px] truncate">
-            {title}
-          </span>
-          <span className="text-[8px] text-orola-cream/50">
-            {unlocked ? "可听" : formatDistance(distance)}
-          </span>
-        </div>
+        <span className="mt-1 text-[8px] text-orola-cream/50 pointer-events-none">
+          {unlocked ? "可听" : formatDistance(distance)}
+        </span>
       )}
     </motion.button>
   );

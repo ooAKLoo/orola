@@ -5,14 +5,17 @@ import { playAudio, pauseAudio } from "../lib/audio";
 interface PlayerProps {
   url: string;
   title: string;
+  color?: string;
 }
 
-export default function Player({ url, title }: PlayerProps) {
+export default function Player({ url, title, color }: PlayerProps) {
   const [playing, setPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const rafRef = useRef<number>(0);
+
+  const accentColor = color ?? "var(--color-orola-green)";
 
   const updateProgress = () => {
     const audio = audioRef.current;
@@ -58,7 +61,8 @@ export default function Player({ url, title }: PlayerProps) {
         <motion.button
           whileTap={{ scale: 0.9 }}
           onClick={toggle}
-          className="w-10 h-10 rounded-xl bg-orola-green flex items-center justify-center flex-shrink-0"
+          className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+          style={{ backgroundColor: accentColor }}
         >
           {playing ? (
             <svg className="w-4 h-4 text-white" viewBox="0 0 24 24" fill="currentColor">
@@ -77,8 +81,8 @@ export default function Player({ url, title }: PlayerProps) {
           </div>
           <div className="h-1 bg-orola-l3 rounded-full overflow-hidden">
             <motion.div
-              className="h-full bg-orola-green rounded-full"
-              style={{ width: `${pct}%` }}
+              className="h-full rounded-full"
+              style={{ width: `${pct}%`, backgroundColor: accentColor }}
             />
           </div>
           <div className="flex justify-between mt-1">

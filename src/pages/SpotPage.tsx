@@ -5,6 +5,7 @@ import { supabase, type Sound } from "../lib/supabase";
 import { getPublicUrl } from "../lib/audio";
 import { useGeolocation } from "../hooks/useGeolocation";
 import { getDistance, formatDistance } from "../lib/geo";
+import { getPalette, paletteBg, palettePrimary } from "../lib/palette";
 import Player from "../components/Player";
 import DistanceBadge from "../components/DistanceBadge";
 
@@ -44,6 +45,8 @@ export default function SpotPage() {
     );
   }
 
+  const palette = getPalette(sound.title);
+  const primary = palettePrimary(palette.colors);
   const distance =
     latitude !== null && longitude !== null
       ? getDistance(latitude, longitude, sound.latitude, sound.longitude)
@@ -52,9 +55,17 @@ export default function SpotPage() {
   const audioUrl = getPublicUrl(sound.audio_url);
 
   return (
-    <div className="h-full flex flex-col bg-orola-cream">
+    <div className="h-full flex flex-col bg-orola-cream relative overflow-hidden">
+      {/* Mood ambient glow */}
+      <div
+        className="absolute top-0 left-1/2 -translate-x-1/2 w-[200%] h-[40%] pointer-events-none"
+        style={{
+          background: `radial-gradient(ellipse at 50% 0%, ${primary}14 0%, transparent 70%)`,
+        }}
+      />
+
       {/* Header */}
-      <div className="flex items-center gap-3 px-4 pt-[calc(env(safe-area-inset-top)+12px)] pb-3">
+      <div className="relative flex items-center gap-3 px-4 pt-[calc(env(safe-area-inset-top)+12px)] pb-3">
         <motion.button
           whileTap={{ scale: 0.9 }}
           onClick={() => navigate(-1)}
@@ -64,28 +75,17 @@ export default function SpotPage() {
             <polyline points="15 18 9 12 15 6" />
           </svg>
         </motion.button>
-        <div className="flex-1 min-w-0">
-          <h1 className="text-[13px] font-medium text-orola-bark truncate">
-            {sound.title}
-          </h1>
+        <div className="flex-1 min-w-0 flex items-center gap-2">
+          <div
+            className="w-4 h-4 rounded-full shrink-0"
+            style={{ background: paletteBg(palette.colors) }}
+          />
         </div>
         <DistanceBadge meters={distance} unlockRadius={sound.unlock_radius} />
       </div>
 
       {/* Content */}
-      <div className="flex-1 min-h-0 overflow-y-auto px-4 pb-6">
-        {/* Description */}
-        {sound.description && (
-          <div className="bg-orola-l1 rounded-2xl p-4 mb-3">
-            <div className="text-[9px] font-medium text-orola-bark/40 uppercase tracking-wide mb-2">
-              描述
-            </div>
-            <p className="text-[11px] text-orola-bark/70 leading-relaxed">
-              {sound.description}
-            </p>
-          </div>
-        )}
-
+      <div className="relative flex-1 min-h-0 overflow-y-auto px-4 pb-6">
         {/* Location */}
         {sound.address && (
           <div className="bg-orola-l1 rounded-2xl p-4 mb-3">
@@ -106,7 +106,7 @@ export default function SpotPage() {
               exit={{ opacity: 0, y: 8 }}
               transition={{ duration: 0.2, ease: "easeOut" }}
             >
-              <Player url={audioUrl} title={sound.title} />
+              <Player url={audioUrl} title="声音" color={primary} />
             </motion.div>
           ) : (
             <motion.div

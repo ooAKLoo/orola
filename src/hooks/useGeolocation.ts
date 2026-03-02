@@ -7,7 +7,7 @@ interface GeoState {
   loading: boolean;
 }
 
-export function useGeolocation() {
+export function useGeolocation(enabled = true) {
   const [state, setState] = useState<GeoState>({
     latitude: null,
     longitude: null,
@@ -16,6 +16,11 @@ export function useGeolocation() {
   });
 
   useEffect(() => {
+    if (!enabled) {
+      setState({ latitude: null, longitude: null, error: null, loading: true });
+      return;
+    }
+
     if (!navigator.geolocation) {
       setState((s) => ({ ...s, error: "浏览器不支持定位", loading: false }));
       return;
@@ -37,7 +42,7 @@ export function useGeolocation() {
     );
 
     return () => navigator.geolocation.clearWatch(watchId);
-  }, []);
+  }, [enabled]);
 
   return state;
 }

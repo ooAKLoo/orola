@@ -116,7 +116,7 @@ export default function SensePage() {
           <SoundOrb
             key={o.id}
             id={o.id}
-            title={o.title}
+            colorKey={o.title}
             x={o.x}
             y={o.y}
             size={o.orbSize}
